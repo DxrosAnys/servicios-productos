@@ -1,14 +1,11 @@
 package com.formacionbdi.springboot.app.productos.controllers;
 
-import com.formacionbdi.springboot.app.productos.models.entity.Producto;
+import com.formacionbdi.springboot.app.commons.models.entity.Producto;
 import com.formacionbdi.springboot.app.productos.models.service.ProductoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,5 +52,26 @@ public class ProductoController {
 //            throw new Exception("No se puedo cargar el producto");
 //        }
         return producto;
+    }
+
+    @PostMapping("/save")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Producto crear(@RequestBody Producto producto) {
+        return productoService.save(producto);
+    }
+
+    @PutMapping("/edit/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Producto editar (@PathVariable("id") Long id, @RequestBody Producto producto){
+        Producto productoDb = productoService.findById(id);
+        productoDb.setNombre(producto.getNombre());
+        productoDb.setPrecio(producto.getPrecio());
+        return productoService.save(productoDb);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void borrarProducto(@PathVariable("id") Long id){
+        productoService.deleteById(id);
     }
 }
